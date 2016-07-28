@@ -38,13 +38,12 @@ public class MoviesListAdapter extends ArrayAdapter<Movie> {
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.grid_item_movies, null);
-            ImageView imageViewPoster = (ImageView) convertView;
-            Log.d(LOG_TAG,"Poster path:"+Utils.
-                    getCompletePosterPath(context,getItem(position).posterPath));
-            Picasso.with(context).load(Utils.
-                    getCompletePosterPath(context,getItem(position).posterPath)).into(imageViewPoster);
-
         }
+        ImageView imageViewPoster = (ImageView) convertView;
+        Log.d(LOG_TAG,"Poster path:"+Utils.
+                getCompletePosterPath(context,getItem(position).posterPath));
+        Picasso.with(context).load(Utils.
+                getCompletePosterPath(context,getItem(position).posterPath)).into(imageViewPoster);
 
         return convertView;
     }
