@@ -8,5 +8,5 @@
     <dimen name="height_poster_detail">150dp</dimen>
     <dimen name="padding_textview_appbar">10dp</dimen>
     <dimen name="size_text_appbar">40sp</dimen>
-    <dimen name="min_height_title_appbar">200dp</dimen>
+    <dimen name="min_height_title_appbar">150dp</dimen>
 </resources>
