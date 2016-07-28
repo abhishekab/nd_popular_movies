@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
@@ -55,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
         gridViewPosters=(GridView)findViewById(R.id.gridViewPosters);
         mMoviesAdapter=new MoviesListAdapter(MainActivity.this,R.layout.grid_item_movies,new ArrayList<Movie>());
         gridViewPosters.setAdapter(mMoviesAdapter);
+        gridViewPosters.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+
+                Intent intent =new Intent(MainActivity.this,DetailActivity.class);
+                intent.putExtra(getString(R.string.extra_key_intent_movie),mMoviesAdapter.getItem(pos));
+                startActivity(intent);
+            }
+        });
 
     }
 

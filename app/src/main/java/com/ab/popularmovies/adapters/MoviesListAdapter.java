@@ -47,6 +47,10 @@ public class MoviesListAdapter extends ArrayAdapter<Movie> {
 
         return convertView;
     }
+
+
+
+
 }
 
 
