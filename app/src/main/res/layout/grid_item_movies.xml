@@ -2,7 +2,9 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:adjustViewBounds="true"
-
-    android:id="@+id/imageViewMoviePoster">
+    android:background="@drawable/gridview_selector"
+    android:id="@+id/imageViewMoviePoster"
+    android:scaleType="fitXY"
+    >
 
 </ImageView>

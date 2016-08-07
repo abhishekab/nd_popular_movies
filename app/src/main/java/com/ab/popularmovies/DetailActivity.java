@@ -8,39 +8,28 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ab.popularmovies.fragments.DetailFragment;
 import com.ab.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-public class DetailActivity extends AppCompatActivity {
-    Movie movieDetailed=null;
+public class DetailActivity extends AppCompatActivity implements DetailFragment.DetailInterface {
+
+    private static final String DETAILFRAGMENT_TAG ="detail_fragment" ;
+    private TextView textViewTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         setupToolbar();
         setupCollapsingToolbar();
-        if (getIntent().hasExtra(getString(R.string.extra_key_intent_movie)))
-        {
-            movieDetailed=getIntent().getParcelableExtra(getString(R.string.extra_key_intent_movie));
+        textViewTitle=(TextView)findViewById(R.id.textViewTitle);
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container , DetailFragment.newInstance(getIntent().getParcelableExtra(getString(R.string.extra_key_intent_movie)),false),DETAILFRAGMENT_TAG)
+                    .commit();
         }
-        if(movieDetailed!=null) {
-            TextView textViewTitle=(TextView)findViewById(R.id.textViewTitle);
-            ImageView imageViewPoster = (ImageView) findViewById(R.id.imageViewPosterDetail);
-            TextView textViewRating=(TextView) findViewById(R.id.textViewRating);
-            TextView textViewReleaseDate=(TextView) findViewById(R.id.textViewReleaseDate);
-            TextView textViewOverview=(TextView) findViewById(R.id.textViewOverview);
 
-
-            setTitle(movieDetailed.originalTitle);
-            textViewTitle.setText(movieDetailed.originalTitle);
-            Picasso.with(this).load(Utils.
-                    getCompletePosterPath(this,movieDetailed.posterPath)).into(imageViewPoster);
-            textViewRating.setText(String.format(getString(R.string.rating_formatted),movieDetailed.userRating));
-            textViewReleaseDate.setText(movieDetailed.releaseDate);
-            textViewOverview.setText(movieDetailed.overview);
-
-
-        }
     }
 
 
@@ -59,5 +48,12 @@ public class DetailActivity extends AppCompatActivity {
 
        // collapsingToolbar.setTitleEnabled(false);
         collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.transparent));
+    }
+
+    @Override
+    public void setTitleInParent(String title) {
+        setTitle(title);
+        textViewTitle.setText(title);
+
     }
 }

@@ -21,4 +21,8 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="GridViewStyle">
+
+    </style>
+
 </resources>

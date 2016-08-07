@@ -2,6 +2,7 @@ package com.ab.popularmovies;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,8 +24,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.ab.popularmovies.adapters.MoviesListAdapter;
+import com.ab.popularmovies.fragments.DetailFragment;
+import com.ab.popularmovies.fragments.MoviesFragment;
 import com.ab.popularmovies.model.Movie;
 import com.ab.popularmovies.model.MovieDbApiResponse;
 import com.google.gson.Gson;
@@ -38,67 +42,57 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-
-    private ProgressBar progressBarFetching;
-
-    private MoviesListAdapter mMoviesAdapter;
-    private GridView gridViewPosters;
-    // initially the sort Criteria is blank
+public class MainActivity extends AppCompatActivity  implements MoviesFragment.MoviesInterface{
     private String sortCriteria="";
+    private static final String DETAILFRAGMENT_TAG ="detail_fragment" ;
+    boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkNetworkAvailable();
-        progressBarFetching=(ProgressBar)findViewById(R.id.progressBarFetching);
-        gridViewPosters=(GridView)findViewById(R.id.gridViewPosters);
-        mMoviesAdapter=new MoviesListAdapter(MainActivity.this,R.layout.grid_item_movies,new ArrayList<Movie>());
-        gridViewPosters.setAdapter(mMoviesAdapter);
-        gridViewPosters.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-
-                Intent intent =new Intent(MainActivity.this,DetailActivity.class);
-                intent.putExtra(getString(R.string.extra_key_intent_movie),mMoviesAdapter.getItem(pos));
-                startActivity(intent);
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container,new DetailFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
             }
-        });
-
+        }
+        else {
+            mTwoPane=false;
+        }
     }
+
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         String newlySetSortCriteria=sharedPreferences.getString(getString(R.string.pref_sortby_key),getString(R.string.sort_criteria_popular));
         // if adapter is empty or there is a change in sort criteria
-        if(!sortCriteria.equals(newlySetSortCriteria) || mMoviesAdapter.isEmpty())
+        if(!sortCriteria.equals(newlySetSortCriteria))
         {
-          new FetchPopularMoviesTask().execute(newlySetSortCriteria) ;
-        }
+            MoviesFragment moviesFragment=(MoviesFragment)getFragmentManager().findFragmentById(R.id.fragment_movies);
+            moviesFragment.updateSettingSortCriteria(newlySetSortCriteria);
 
+            if(mTwoPane)
+            {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container,new DetailFragment(), DETAILFRAGMENT_TAG).commit();
+
+            }
+        }
+        super.onStart();
     }
 
 
-    private void updateTitle( String sortCriteria)
-    {
-        if(sortCriteria.equals(getString(R.string.sort_criteria_popular)))
-        {
-            setTitle(getString(R.string.title_most_popular_movies));
-        }
-        else if(sortCriteria.equals(getString(R.string.sort_criteria_top_rated)))
-        {
-            setTitle(getString(R.string.title_top_rated_movies));
-        }
-        else
-        {
-            setTitle(R.string.app_name);
-        }
-    }
 
-    private void checkNetworkAvailable() {
+
+
+    @Override
+    public void checkNetworkAvailable() {
 
         if(!isNetworkAvailable(MainActivity.this))
         {
@@ -113,12 +107,31 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).show();
 
+        }
+    }
 
+    @Override
+    public void onItemSelected(Movie movie) {
+        if(mTwoPane){
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container,
+                            DetailFragment.newInstance(movie,true), DETAILFRAGMENT_TAG)
+                    .commit();
 
+        }
+        else {
+            Intent intent =new Intent(this,DetailActivity.class);
+            intent.putExtra(getString(R.string.extra_key_intent_movie),movie);
+            startActivity(intent);
 
         }
     }
 
+    @Override
+    public void updateSortCriteria(String sortCriteria) {
+        this.sortCriteria=sortCriteria;
+        updateTitle(sortCriteria);
+    }
 
 
     boolean isNetworkAvailable(Context context) {
@@ -152,108 +165,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class FetchPopularMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
-        String movieDbBasePath = getString(R.string.path_base_moviedb);
-        final String API_KEY = "api_key";
-        final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
-        String newSetSortCriteria;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBarFetching.setVisibility(View.VISIBLE);
-
+    private void updateTitle( String sortCriteria)
+    {
+        if(sortCriteria.equals(getString(R.string.sort_criteria_popular)))
+        {
+           setTitle(getString(R.string.title_most_popular_movies));
         }
-
-        @Override
-        protected List<Movie> doInBackground(String... strings) {
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String responseString;
-            newSetSortCriteria=strings[0];
-
-            try {
-                Uri.Builder uriBuilder = Uri.parse(movieDbBasePath).buildUpon()
-                        .appendPath(newSetSortCriteria)
-                        .appendQueryParameter(API_KEY, getString(R.string.moviedb_api_key));
-                Log.d(LOG_TAG,"Url:"+uriBuilder.build().toString());
-                URL url = new URL(uriBuilder.build().toString());
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                if (buffer.length() == 0) {
-
-                    return null;
-                }
-                responseString = buffer.toString();
-                //Log.d(LOG_TAG, responseString);
-
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-
-            try {
-
-                Gson gson = new Gson();
-                MovieDbApiResponse movieDbApiResponse = gson.fromJson(responseString, MovieDbApiResponse.class);
-
-                return movieDbApiResponse.listMovies;
-            } catch (Exception e) {
-
-                Log.e(LOG_TAG, "Error in JSON parsing", e);
-                return null;
-            }
+        else if(sortCriteria.equals(getString(R.string.sort_criteria_top_rated)))
+        {
+            setTitle(getString(R.string.title_top_rated_movies));
         }
-
-
-        @Override
-        protected void onPostExecute(List<Movie> movies) {
-            super.onPostExecute(movies);
-            progressBarFetching.setVisibility(View.GONE);
-            if(movies!=null)
-            {
-                mMoviesAdapter.clear();
-                mMoviesAdapter.addAll(movies);
-                // update sortCriteria only if successfullt fetched the results
-                sortCriteria=newSetSortCriteria;
-                updateTitle(sortCriteria);
-            }
-            else
-            {
-                // The result was null, check network coverage
-                checkNetworkAvailable();
-            }
-
+        else
+        {
+           setTitle(R.string.app_name);
         }
     }
+
+
 }
