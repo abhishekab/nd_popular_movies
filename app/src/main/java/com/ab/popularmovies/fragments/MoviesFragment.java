@@ -77,7 +77,6 @@ public class MoviesFragment extends Fragment {
         return view;
     }
 
-    
     void getMovies(final String sortCriteria) {
         progressBarFetching.setVisibility(View.VISIBLE);
         MovieDbService movieDbService = ApiBuilder.getClient(getActivity()).create(MovieDbService.class);
