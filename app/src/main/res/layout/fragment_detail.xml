@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -7,7 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_inner_detail">
+        android:paddingTop="@dimen/padding_inner_detail"
+        android:paddingBottom="@dimen/padding_inner_detail"
+       >
 
 
         <TextView
@@ -16,17 +18,20 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:minHeight="@dimen/min_height_title_appbar"
-            android:paddingLeft="@dimen/padding_textview_appbar"
-            android:paddingRight="@dimen/padding_textview_appbar"
+            android:paddingLeft="@dimen/padding_inner_detail"
+            android:paddingRight="@dimen/padding_inner_detail"
             android:textSize="@dimen/size_text_appbar"
             android:visibility="gone"
+
             />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_inner_detail"
+            android:paddingRight="@dimen/padding_inner_detail">
 
 
             <ImageView
@@ -80,10 +85,68 @@
             android:id="@+id/textViewOverview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_top_overview" />
+            android:layout_marginTop="@dimen/margin_top_overview"
+            android:paddingLeft="@dimen/padding_inner_detail"
+            android:paddingRight="@dimen/padding_inner_detail"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutTrailer"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:paddingLeft="@dimen/padding_inner_detail"
+                android:paddingRight="@dimen/padding_inner_detail"
+                android:layout_height="wrap_content"
+                android:text="@string/trailers"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerViewTrailers"
+                android:layout_marginTop="10dp"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutReviews"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/padding_inner_detail"
+            android:paddingRight="@dimen/padding_inner_detail"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reviews"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerViewReviews"
+                android:layout_marginTop="10dp"
+                />
+        </LinearLayout>
+
+
 
     </LinearLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>
 
 

@@ -20,4 +20,16 @@ public class Utils {
 
 
     }
+
+
+    public  static String getYouTubeIconPath(String video_id)
+    {
+        return "http://img.youtube.com/vi/"+video_id+"/default.jpg";
+
+    }
+
+    public static Uri getYoutubeUriFromId(String id)
+    {
+        return Uri.parse("http://m.youtube.com/watch?v="+id);
+    }
 }

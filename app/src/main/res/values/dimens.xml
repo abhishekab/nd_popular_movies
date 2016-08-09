@@ -6,7 +6,10 @@
     <dimen name="padding_inner_detail">16dp</dimen>
     <dimen name="margin_top_overview">10dp</dimen>
     <dimen name="height_poster_detail">150dp</dimen>
-    <dimen name="padding_textview_appbar">10dp</dimen>
+    <dimen name="padding_textview_appbar">16dp</dimen>
     <dimen name="size_text_appbar">40sp</dimen>
     <dimen name="min_height_title_appbar">150dp</dimen>
+    <dimen name="margin_horizontal_trailer">3dp</dimen>
+    <dimen name="width_youtube_image">120dp</dimen>
+    <dimen name="height_youtube_image">90dp</dimen>
 </resources>

@@ -32,6 +32,7 @@
         <activity android:name=".DetailActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             >
 
             <meta-data

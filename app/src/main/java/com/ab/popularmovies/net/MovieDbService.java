@@ -1,6 +1,8 @@
 package com.ab.popularmovies.net;
 
 import com.ab.popularmovies.model.MovieDbApiResponse;
+import com.ab.popularmovies.model.ReviewResponse;
+import com.ab.popularmovies.model.TrailerResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,4 +17,10 @@ public interface MovieDbService {
 
     @GET("{sort_criteria}")
     Call<MovieDbApiResponse> getMovies(@Path("sort_criteria") String sortCriteria,@Query("api_key") String apiKey);
+
+    @GET("{id}/videos")
+    Call<TrailerResponse> getTrailers(@Path("id") String id, @Query("api_key") String apiKey);
+
+    @GET("{id}/reviews")
+    Call<ReviewResponse> getReviews(@Path("id") String id, @Query("api_key") String apiKey);
 }
