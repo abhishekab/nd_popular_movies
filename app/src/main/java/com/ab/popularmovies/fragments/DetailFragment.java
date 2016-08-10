@@ -119,7 +119,9 @@ public class DetailFragment extends Fragment {
                     if (rowDeleted > 0)
                         isFavorite = false;
                     deleteFile(movieDetailed.id);
-                    ((DetailInterface)getActivity()).removeFragment();
+                    // Removed from favorites so remove if 2pane and is displaying favorite criteria
+                    if(Utils.getCurrentSortCriteria(getActivity()).equalsIgnoreCase(getString(R.string.sort_criteria_favorite)))
+                        ((DetailInterface)getActivity()).removeFragment();
 
                 } else {
                     try {
