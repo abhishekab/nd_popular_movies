@@ -44,7 +44,7 @@ import java.util.List;
 
 import okhttp3.internal.Util;
 
-public class MainActivity extends AppCompatActivity  implements MoviesFragment.MoviesInterface{
+public class MainActivity extends AppCompatActivity  implements MoviesFragment.MoviesInterface,DetailFragment.DetailInterface{
     private String sortCriteria="";
     private static final String DETAILFRAGMENT_TAG ="detail_fragment" ;
     boolean mTwoPane;
@@ -183,6 +183,23 @@ public class MainActivity extends AppCompatActivity  implements MoviesFragment.M
         else
         {
             setTitle(getString(R.string.app_name));
+        }
+    }
+
+
+    @Override
+    public void setTitleInParent(String title) {
+        // do nothing
+    }
+
+    @Override
+    public void removeFragment()
+    {
+        if(mTwoPane)
+        {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container,new DetailFragment(), DETAILFRAGMENT_TAG).commit();
+
         }
     }
 

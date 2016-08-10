@@ -56,4 +56,9 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
         textViewTitle.setText(title);
 
     }
+
+    @Override
+    public void removeFragment() {
+        //do Nothing
+    }
 }

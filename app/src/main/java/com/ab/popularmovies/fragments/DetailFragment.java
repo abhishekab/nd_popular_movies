@@ -119,6 +119,8 @@ public class DetailFragment extends Fragment {
                     if (rowDeleted > 0)
                         isFavorite = false;
                     deleteFile(movieDetailed.id);
+                    ((DetailInterface)getActivity()).removeFragment();
+
                 } else {
                     try {
 
@@ -169,7 +171,13 @@ public class DetailFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
-            } finally {
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return null;
+            }
+            finally {
                 if(bm!=null)
                     bm.recycle();
             }
@@ -256,6 +264,7 @@ public class DetailFragment extends Fragment {
 
     public interface DetailInterface {
         void setTitleInParent(String title);
+        void removeFragment();
     }
 
 
@@ -319,6 +328,8 @@ public class DetailFragment extends Fragment {
         });
 
     }
+
+
 
 
 }
