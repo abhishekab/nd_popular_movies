@@ -42,6 +42,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.internal.Util;
+
 public class MainActivity extends AppCompatActivity  implements MoviesFragment.MoviesInterface{
     private String sortCriteria="";
     private static final String DETAILFRAGMENT_TAG ="detail_fragment" ;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity  implements MoviesFragment.M
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkNetworkAvailable();
+        //checkNetworkAvailable();
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
@@ -69,9 +71,8 @@ public class MainActivity extends AppCompatActivity  implements MoviesFragment.M
     @Override
     public void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String newlySetSortCriteria=sharedPreferences.getString(getString(R.string.pref_sortby_key),getString(R.string.sort_criteria_popular));
         // if adapter is empty or there is a change in sort criteria
+        String newlySetSortCriteria= Utils.getCurrentSortCriteria(this);
         if(!sortCriteria.equals(newlySetSortCriteria))
         {
             MoviesFragment moviesFragment=(MoviesFragment)getFragmentManager().findFragmentById(R.id.fragment_movies);
@@ -99,10 +100,9 @@ public class MainActivity extends AppCompatActivity  implements MoviesFragment.M
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(R.string.network_unavailable)
                     .setMessage(R.string.check_internet_connectivity)
-                    .setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
 
                         }
                     }).show();
@@ -176,9 +176,13 @@ public class MainActivity extends AppCompatActivity  implements MoviesFragment.M
         {
             setTitle(getString(R.string.title_top_rated_movies));
         }
+        else if(sortCriteria.equals(getString(R.string.sort_criteria_favorite)))
+        {
+           setTitle(getString(R.string.favorites));
+        }
         else
         {
-           setTitle(R.string.app_name);
+            setTitle(getString(R.string.app_name));
         }
     }
 

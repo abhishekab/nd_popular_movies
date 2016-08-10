@@ -43,7 +43,8 @@ public class MoviesListAdapter extends ArrayAdapter<Movie> {
         Log.d(LOG_TAG,"Poster path:"+Utils.
                 getCompletePosterPath(context,getItem(position).posterPath));
         Picasso.with(context).load(Utils.
-                getCompletePosterPath(context,getItem(position).posterPath)).into(imageViewPoster);
+                getCompletePosterPath(context,getItem(position).posterPath)).
+                placeholder(R.drawable.error_image).into(imageViewPoster);
 
         return convertView;
     }
